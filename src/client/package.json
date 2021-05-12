@@ -1,0 +1,47 @@
+{
+  "name": "rlay",
+  "version": "1.0.0",
+  "description": "Relay HTTP requests through a server to your dev machine",
+  "main": "dist/index.js",
+  "dependencies": {
+    "socket.io-client": "^4.1.1",
+    "yaclip": "^1.2.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.0.2",
+    "@types/should": "^13.0.0",
+    "mocha": "^8.4.0",
+    "rimraf": "^3.0.2",
+    "should": "^13.2.3",
+    "testdouble": "^3.16.1",
+    "ts-loader": "^9.1.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "test": "mocha --require ts-node/register ./test/**/*.ts",
+    "build": "tsc",
+    "clean": "rimraf dist/",
+    "rebuild": "npm run clean && npm run build",
+    "prepublish": "npm run rebuild",
+    "start": "npm run build && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfe84/rlay.git"
+  },
+  "keywords": [
+    "ngrok",
+    "relay"
+  ],
+  "author": "Charles Feval",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfe84/rlay/issues"
+  },
+  "homepage": "https://github.com/cfe84/rlay#readme",
+  "bin": {
+    "rlay": "./bin/rlay"
+  }
+}
