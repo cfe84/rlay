@@ -1,14 +1,16 @@
 import * as express from "express"
+import * as http from "http"
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from "./Request"
 import { Response } from "./Response";
 import { Server, Socket } from "socket.io"
 
-const serverPort = process.env.SERVER_PORT || 8080
-const relayPort = process.env.RELAY_PORT || "8081"
+const port = process.env.PORT || 8080
 
+const app = express()
+const server = http.createServer(app)
 
-const io = new Server(Number.parseInt(relayPort))
+const io = new Server(server)
 let socket: Socket | undefined = undefined
 io.on("connection", (newSocket: Socket) => {
   console.log(`Client connected`)
@@ -23,8 +25,10 @@ io.on("connection", (newSocket: Socket) => {
   })
 })
 
-const app = express()
 app.all("*", (req, res) => {
+  if (req.path.indexOf("socket.io") >= 0) {
+    return
+  }
   let body = ""
   req.on("data", (chunk) => body += chunk)
   req.on("end", () => {
@@ -58,6 +62,6 @@ app.all("*", (req, res) => {
     })
   })
 })
-app.listen(serverPort, () => {
-  console.log(`Listening for HTTP requests on ${serverPort}, relay open on ${relayPort}`)
+server.listen(port, () => {
+  console.log(`Listening for HTTP requests on ${port}`)
 })

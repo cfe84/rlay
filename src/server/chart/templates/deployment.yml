@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.ns }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+      - name: {{ .Values.appName }}
+        image: {{ .Values.dockerRepo }}{{ .Values.appName }}:{{ .Values.imageVersion }}
+
+        # env:
+        # - name: PORT
+        #   value: {{ .Values.port }}
+          
+      # # Uncomment storageclass-sharedfolder if needed
+      #
+      #   volumeMounts:
+      #   - mountPath: "/mnt/storage"
+      #     name: sharedfolder
+      # volumes:
+      #   - name: sharedfolder
+      #     persistentVolumeClaim:
+      #       claimName: {{ .Values.appName }}-azurefile-pvc
+
+# # Uncomment to use a pre-provisioned storage account shared folder
+#         volumeMounts:
+#         - mountPath: "/mnt/storage"
+#           name: sharedfolder
+#       volumes:
+#       - name: sharedfolder
+#         azureFile:
+# # read -p "Storage account name > " STORAGE_ACCOUNT_NAME && \
+# # read -p " Storage account key > " STORAGE_ACCOUNT_KEY && \
+# # kubectl create secret generic azure-sec \
+# #   --from-literal=azurestorageaccountname=$STORAGE_ACCOUNT_NAME \
+# #   --from-literal=azurestorageaccountkey=$STORAGE_ACCOUNT_KEY
+#           secretName: azure-sec
+#           shareName: whatis
+#           readOnly: false

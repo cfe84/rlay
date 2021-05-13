@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Push to Dockerhub and deploy to AKS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set AKS context
+        uses: azure/aks-set-context@v1
+        with:
+          # create with `az ad sp create-for-rbac --sdk-auth`
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ secrets.AZURE_CLUSTER_NAME }}
+          resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
+      - uses: actions/checkout@v2
+            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: cfe84/airbnb-report:${{ github.sha }}
+      - name: Deploy to kubernetes
+      # TODO: Add environment variables using --set variable=${{ secrets.SMTP_HOST }}
+        run: |
+          helm template ./chart --set variable=something --set containerTag=${{ github.sha }} | kubectl apply -f -

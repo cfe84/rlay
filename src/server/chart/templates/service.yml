@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: {{ .Values.ns }}
+  name: {{ .Values.appName }}-service
+spec:
+  selector:
+    app: {{ .Values.appName }}
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

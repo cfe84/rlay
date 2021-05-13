@@ -5,14 +5,14 @@ import { Request } from "./Request"
 import { Response } from "./Response"
 
 const commands = parseCommandLine([
-  { name: "relay-port", alias: "P", "type": String, description: "Port on relay server" },
+  { name: "relay-port", alias: "P", "type": String, description: "Port on relay server. Default is 443" },
   { name: "relay-host", alias: "H", "type": String, description: "Host of relay server", optional: false },
-  { name: "port", alias: "p", "type": String, description: "Local port", optional: false },
-  { name: "host", alias: "h", "type": String, description: "Host of local server" },
+  { name: "port", alias: "p", "type": String, description: "Local port.", optional: false },
+  { name: "host", alias: "h", "type": String, description: "Host of local server. Default is localhost" },
 ], { dashesAreOptional: true })
 
 const localPort = Number.parseInt((commands["port"] as any).value)
-const relayPort = commands["relay-port"] ? Number.parseInt((commands["relay-port"] as any).value) : 8081
+const relayPort = commands["relay-port"] ? Number.parseInt((commands["relay-port"] as any).value) : 443
 const localHost = commands["host"] ? (commands["host"] as any).value : "localhost"
 const relayHost = (commands["relay-host"] as any).value
 
@@ -24,9 +24,12 @@ const parseHeaders = (headers: string[]): { [key: string]: string } => {
   return res
 }
 
-const url = `http://${relayHost}:${relayPort}`
+const url = `${relayHost}:${relayPort}`
 const socket = io(url)
-console.log(`Connected to ${url}`)
+console.log(`Connecting to ${url}`)
+socket.on("connect", () => {
+  console.log(`Connected to ${url}`)
+})
 socket.on("request received", (request: Request) => {
   const date = new Date()
   process.stdout.write(`${date.getHours()}:${date.getMinutes()} ${request.method} ${request.path}: `)

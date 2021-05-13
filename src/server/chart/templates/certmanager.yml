@@ -1,0 +1,35 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: {{ .Values.ns }}
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: acme@{{ .Values.hostName }}
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - selector: {}
+      http01:
+        ingress:
+          class: nginx
+
+---
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: {{ .Values.ns }}
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: acme@{{ .Values.hostName }}
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - selector: {}
+      http01:
+        ingress:
+          class: nginx

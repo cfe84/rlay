@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: tls-secret
+  namespace: {{ .Values.ns }}
+spec:
+  secretName: tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+  commonName: {{ .Values.hostName }}
+  dnsNames:
+  - {{ .Values.hostName }}
