@@ -1,13 +1,15 @@
 {
   "name": "rlay",
   "version": "1.0.0",
-  "description": "Relay HTTP requests through a server to your dev machine",
+  "description": "Relay HTTP requests through a server to your dev machine. A self hosted alternative to ngrok",
   "main": "dist/index.js",
   "dependencies": {
+    "command-line-usage": "^6.1.1",
     "socket.io-client": "^4.1.1",
     "yaclip": "^1.2.1"
   },
   "devDependencies": {
+    "@types/command-line-usage": "^5.0.1",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
     "@types/should": "^13.0.0",
