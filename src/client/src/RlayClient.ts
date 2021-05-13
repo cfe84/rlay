@@ -9,14 +9,20 @@ export class RlayClient {
   private socket: Socket
 
   constructor(private config: Configuration) {
-    const { relayHost, relayPort } = config
-    this.socket = this.connect(relayHost, relayPort)
+    const { relayHost, relayPort, password } = config
+    this.socket = this.connect(relayHost, relayPort, password)
     this.socket.on("request received", this.processRequest.bind(this))
+    this.socket.on("incorrect password", this.handleIncorrectPassword.bind(this))
   }
 
-  private connect(relayHost: string, relayPort: number): Socket {
+  private handleIncorrectPassword() {
+    console.error("Incorrect password");
+    this.socket.disconnect()
+  }
+
+  private connect(relayHost: string, relayPort: number, password: string): Socket {
     const url = `${relayHost}:${relayPort}`
-    const socket = io(url)
+    const socket = io(url, { auth: { password } })
     console.log(`Connecting to ${url}`)
     socket.on("connect", () => {
       console.log(`Connected to ${url}`)

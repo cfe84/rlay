@@ -11,7 +11,7 @@ export class ConfigurationLoader {
       { name: "port", alias: "p", "type": String, description: "Local port.", optional: false },
       { name: "host", alias: "h", "type": String, description: "Host of local server. Default is localhost" },
       { name: "password", "type": String, description: "Rlay password" },
-      { name: "help", "type": Boolean, description: "Display commandline help" },
+      { name: "help", "type": Boolean, description: "Display command-line help" },
     ]
 
     function displayHelp() {

@@ -6,6 +6,11 @@ import { Response } from "./Response";
 import { Server, Socket } from "socket.io"
 
 const port = process.env.PORT || 8080
+const password = process.env.PASSWORD
+if (!password) {
+  console.error(`No password specified.`)
+  process.exit(1)
+}
 
 const app = express()
 const server = http.createServer(app)
@@ -13,7 +18,13 @@ const server = http.createServer(app)
 const io = new Server(server)
 let socket: Socket | undefined = undefined
 io.on("connection", (newSocket: Socket) => {
-  console.log(`Client connected`)
+  console.log(`Client connection request`)
+  if (newSocket.handshake.auth.password !== password) {
+    console.error(`Password does not match. Rejecting connection`)
+    newSocket.emit("incorrect password")
+    newSocket.disconnect(true)
+    return
+  }
   if (socket !== undefined) {
     console.log(`Replacing old socket`)
     socket.disconnect(true)
