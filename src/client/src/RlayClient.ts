@@ -27,6 +27,9 @@ export class RlayClient {
     socket.on("connect", () => {
       console.log(`Connected to ${url}`)
     })
+    socket.on("disconnect", () => {
+      console.log(`Disconnected. Attempting reconnection`)
+    })
     return socket
   }
 
