@@ -1,10 +1,8 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Push to Dockerhub and deploy to AKS
+name: Push server to Dockerhub and deploy to AKS
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -28,11 +26,11 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./src/server/
+          file: ./src/server/Dockerfile
           push: true
-          tags: cfe84/airbnb-report:${{ github.sha }}
+          tags: cfe84/rlay:${{ github.sha }}
       - name: Deploy to kubernetes
       # TODO: Add environment variables using --set variable=${{ secrets.SMTP_HOST }}
         run: |
-          helm template ./chart --set variable=something --set containerTag=${{ github.sha }} | kubectl apply -f -
+          helm template ./src/server/chart --set password=${{ secrets.RLAY_PASSWORD }} --set containerTag=${{ github.sha }} | kubectl apply -f -

@@ -18,10 +18,9 @@ spec:
       containers:
       - name: {{ .Values.appName }}
         image: {{ .Values.dockerRepo }}{{ .Values.appName }}:{{ .Values.imageVersion }}
-
-        # env:
-        # - name: PORT
-        #   value: {{ .Values.port }}
+        env:
+        - name: RLAY_PASSWORD
+          value: {{ .Values.password }}
           
       # # Uncomment storageclass-sharedfolder if needed
       #
