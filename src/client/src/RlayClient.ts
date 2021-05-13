@@ -27,39 +27,10 @@ export class RlayClient {
   private processRequest(request: Request) {
     const date = new Date()
     process.stdout.write(`${date.getHours()}:${date.getMinutes()} ${request.method} ${request.path}: `)
-
-    const req = http.request({
-      host: this.config.localHost,
-      port: this.config.localPort,
-      path: request.path,
-      method: request.method,
-      headers: RlayClient.parseHeaders(request.headers)
-    }, (res) => {
-      let body = ""
-      res.on("data", (chunk) => body += chunk)
-      res.on("end", () => {
-        const response: Response = {
-          body,
-          headers: RlayClient.parseHeaders(res.rawHeaders),
-          statusCode: res.statusCode || 0
-        }
-        console.log(response.statusCode)
-        this.socket.emit(`response for ${request.id}`, response)
-      })
-    })
-    req.on('error', (err) => {
-      const response: Response = {
-        statusCode: 500,
-        body: `Error in relay: ${err}`,
-        headers: {}
-      }
-      console.log(response.statusCode)
-      this.socket.emit(`response for ${request.id}`, response)
-    })
-    if (request.body) {
-      req.write(request.body)
-    }
-    req.end()
+    this.forwardRequestAsync(request)
+      .then(this.processHttpResponseAsync.bind(this))
+      .then(response => this.forwardResponse(request.id, response))
+      .catch(error => this.forwardError(request.id, error))
   }
 
   private forwardRequestAsync(request: Request): Promise<IncomingMessage> {
@@ -74,13 +45,7 @@ export class RlayClient {
         resolve(res)
       })
       req.on('error', (err) => {
-        const response: Response = {
-          statusCode: 500,
-          body: `Error in relay: ${err}`,
-          headers: {}
-        }
-        console.log(response.statusCode)
-        this.socket.emit(`response for ${request.id}`, response)
+        reject(err)
       })
       if (request.body) {
         req.write(request.body)
@@ -89,18 +54,34 @@ export class RlayClient {
     })
   }
 
-  private forwardResponse(requestId: string, res: IncomingMessage) {
-    let body = ""
-    res.on("data", (chunk) => body += chunk)
-    res.on("end", () => {
-      const response: Response = {
-        body,
-        headers: RlayClient.parseHeaders(res.rawHeaders),
-        statusCode: res.statusCode || 0
-      }
-      console.log(response.statusCode)
-      this.socket.emit(`response for ${requestId}`, response)
+  private processHttpResponseAsync(res: IncomingMessage): Promise<Response> {
+    return new Promise((resolve) => {
+      let body = ""
+      res.on("data", (chunk) => body += chunk)
+      res.on("end", () => {
+        const response: Response = {
+          body,
+          headers: RlayClient.parseHeaders(res.rawHeaders),
+          statusCode: res.statusCode || 0
+        }
+        resolve(response)
+      })
     })
+  }
+
+  private forwardResponse(requestId: string, response: Response) {
+    console.log(response.statusCode)
+    this.socket.emit(`response for ${requestId}`, response)
+  }
+
+  private forwardError(requestId: string, error: Error) {
+    const response: Response = {
+      statusCode: 500,
+      body: `Error in relay: ${error}`,
+      headers: {}
+    }
+    console.log(response.statusCode)
+    this.socket.emit(`response for ${requestId}`, response)
   }
 
   private static parseHeaders(headers: string[]): { [key: string]: string } {
