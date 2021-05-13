@@ -10,7 +10,6 @@ on:
 jobs:
 
   publish-client:
-    needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,7 +27,6 @@ jobs:
 
 
   publish-server:
-    needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
