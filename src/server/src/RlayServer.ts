@@ -80,7 +80,6 @@ export class RlayServer {
     this.copyHeaders(response, res);
     res.statusCode = response.statusCode;
     if (response.body) {
-      console.log("Decoding");
       res.write(Buffer.from(response.body, "base64"));
     }
     res.send();
