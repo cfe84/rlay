@@ -38,6 +38,16 @@ From there on, when the remote service makes http calls, they will be forwarded 
 
 # deploy to Azure
 
-Rlay can be deployed to a free Webapp on Azure. Create yourself a free subscription, then use the following template to create a new webapp and deploy Rlay.
+Rlay can be deployed to a free Webapp on Azure.
 
-[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcfe84%2Frlay%2Fmaster%2Fazure-deploy%2Fazuredeploy.json) 
+1. Create yourself a free subscription, then a webapp using Free linux hosting
+2. deploy Rlay by configuring in the App Service configuration > Deployment Center > Settings > GitHub, use the _App Service Build Provider_ as Build provider, select organization as cfe84 (or your fork), repo as _rlay_, branch as _main_, then save.
+3. setup password. Go to the webapp settings > Configuration > Application Settings > add a new app setting called `RLAY_PASSWORD`, set whatever password you want.
+4. activate websockets. In the same screen, click on General Settings > Web sockets > on. Click Save.
+5. In TLS/SSL settings, turn on "HTTPS only"
+
+Navigate to your web app, after a few minutes it should show `No client connected`. Install the client on your computer. Set environment variables `RLAY_PASSWORD` to the same value as the webapp, and `RLAY_HOST` to the webapp's URL. Launch rlay using `rlay --port 8080` (use a port that returns something on your machine), then refresh your webapp and see it working.
+
+Setup a password 
+
+<!--[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcfe84%2Frlay%2Fmaster%2Fazure-deploy%2Fazuredeploy.json) -->
