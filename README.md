@@ -38,5 +38,6 @@ From there on, when the remote service makes http calls, they will be forwarded 
 
 # deploy to Azure
 
-Rlay can be deployed to a free Webapp on Azure. Create yourself a free subscription, then use the following template to create a new webapp and deploy Rlay:
+Rlay can be deployed to a free Webapp on Azure. Create yourself a free subscription, then use the following template to create a new webapp and deploy Rlay.
+
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcfe84%2Frlay%2Fmaster%2Fazure-deploy%2Fazuredeploy.json) 
