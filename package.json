@@ -1,0 +1,17 @@
+{
+  "name": "rlay",
+  "version": "1.2.1",
+  "description": "Rlay",
+  "main": "src/server/dist/index.js",
+  "scripts": {
+    "build": "cd src/server/ && npm install && npm run build",
+    "start": "node src/server/dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.org/cfe84/rlay"
+  },
+  "keywords": [],
+  "author": "Charles Feval",
+  "license": "ISC"
+}
