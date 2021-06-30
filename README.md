@@ -40,7 +40,8 @@ From there on, when the remote service makes http calls, they will be forwarded 
 
 Rlay can be deployed to a free Webapp on Azure.
 
-1. Create yourself a free subscription, then a webapp using Free linux hosting
+0. Fork rlay on Github.
+1. Create yourself a free Azure subscription, then a webapp using Free linux hosting
 2. deploy Rlay by configuring in the App Service configuration > Deployment Center > Settings > GitHub, use the _App Service Build Provider_ as Build provider, select organization as cfe84 (or your fork), repo as _rlay_, branch as _main_, then save.
 3. setup password. Go to the webapp settings > Configuration > Application Settings > add a new app setting called `RLAY_PASSWORD`, set whatever password you want.
 4. activate websockets. In the same screen, click on General Settings > Web sockets > on. Click Save.
