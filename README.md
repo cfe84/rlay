@@ -40,15 +40,13 @@ From there on, when the remote service makes http calls, they will be forwarded 
 
 Rlay can be deployed to a free Webapp on Azure.
 
-0. Fork rlay on Github.
-1. Create yourself a free Azure subscription, then a webapp using Free linux hosting
-2. deploy Rlay by configuring in the App Service configuration > Deployment Center > Settings > GitHub, use the _App Service Build Provider_ as Build provider, select organization as cfe84 (or your fork), repo as _rlay_, branch as _main_, then save.
-3. setup password. Go to the webapp settings > Configuration > Application Settings > add a new app setting called `RLAY_PASSWORD`, set whatever password you want.
-4. activate websockets. In the same screen, click on General Settings > Web sockets > on. Click Save.
+1. Create yourself a free Azure subscription, if you don't have one, then a webapp using Free linux hosting
+2. deploy Rlay by configuring in the App Service configuration > Deployment Center > Settings > **External Git repository**. Don't use GitHub unless you forked the project and want to use this fork as a source. Use the _App Service Build Provider_ as Build provider. Setup repo as https://github.com/cfe84/rlay.git
+, branch as _main_, then save.
+3. Setup password. Go to the webapp settings > Configuration > Application Settings > add a new app setting called `RLAY_PASSWORD`, set whatever password you want.
+4. Activate websockets. In the same screen, click on General Settings > Web sockets > on. Click Save.
 5. In TLS/SSL settings, turn on "HTTPS only"
 
-Navigate to your web app, after a few minutes it should show `No client connected`. Install the client on your computer. Set environment variables `RLAY_PASSWORD` to the same value as the webapp, and `RLAY_HOST` to the webapp's URL. Launch rlay using `rlay --port 8080` (use a port that returns something on your machine), then refresh your webapp and see it working.
-
-Setup a password 
+Navigate to your web app, after a few minutes it should show `No client connected`. Install the client on your computer. Set environment variables `RLAY_PASSWORD` to the same value as the webapp, and `RLAY_HOST` to the webapp's URL. Be sure to reload whatever terminal you are using to reload the environment. Launch rlay using `rlay --port 8080` (use a port that returns something on your machine). Client should connect and display something like `Connected to https://YOUR_WEB_APP.azurewebsites.net:443`. Refresh your webapp in the browser, it should now forward requests to your client.
 
 <!--[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcfe84%2Frlay%2Fmaster%2Fazure-deploy%2Fazuredeploy.json) -->
