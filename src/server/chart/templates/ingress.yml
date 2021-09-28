@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    # Upload limits
+    nginx.org/client-max-body-size: 500m
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
   name: {{ .Values.appName }}-ingress
   namespace: {{ .Values.ns }}
 spec:
@@ -13,9 +16,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{ .Values.appName }}-service
-          servicePort: 8080
+          service:
+            name: {{ .Values.appName }}-service
+            port:
+              number: 8080
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - {{ .Values.hostName }}
