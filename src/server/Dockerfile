@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 # TODO: use your .gitignore as a .dockerignore
 RUN npm install
-RUN npm build
+RUN npm run build
 
 FROM node:14-alpine
 WORKDIR /app
@@ -14,4 +14,4 @@ COPY package.json .
 EXPOSE 8080
 
 ENV RLAY_PORT=8080
-ENTRYPOINT npm start
+ENTRYPOINT npm run start
