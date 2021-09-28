@@ -1,12 +1,17 @@
-FROM node:14-alpine
+FROM node:14-alpine as build
 WORKDIR /app
 COPY . .
 # TODO: use your .gitignore as a .dockerignore
 RUN npm install
+RUN npm build
 
-# TODO: Change port if necessary
+FROM node:14-alpine
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY package.json .
+
 EXPOSE 8080
 
-# TODO: add ENV if necessary
 ENV RLAY_PORT=8080
 ENTRYPOINT npm start
