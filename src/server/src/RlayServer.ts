@@ -6,7 +6,7 @@ import { Server, Socket } from "socket.io";
 import { ServerConfiguration } from "./ServerConfiguration";
 import { Request } from "./Request";
 import { Response } from "./Response";
-import { Logger } from "./logger";
+import { Logger } from "./Logger";
 
 const ERROR_NO_CONNECTION = "No socket connected";
 

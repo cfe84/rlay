@@ -1,5 +1,5 @@
 import { ConfigurationLoader } from "./ConfigurationLoader";
-import { Logger } from "./logger";
+import { Logger } from "./Logger";
 import { RlayServer } from "./RlayServer";
 
 const config = ConfigurationLoader.loadConfiguration()

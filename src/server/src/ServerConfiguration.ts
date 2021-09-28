@@ -1,4 +1,4 @@
-import { LogLevel } from "./logger";
+import { LogLevel } from "./Logger";
 
 export interface ServerConfiguration {
   port: number

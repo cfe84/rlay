@@ -1,6 +1,6 @@
 import { ServerConfiguration } from "./ServerConfiguration";
 import * as dotenv from "dotenv";
-import { LogLevel } from "./logger";
+import { LogLevel } from "./Logger";
 dotenv.config();
 
 export class ConfigurationLoader {

@@ -22,9 +22,6 @@ jobs:
           resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
       - uses: actions/checkout@v2
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Check
-        run: |
-          ls ./src/server/src
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
