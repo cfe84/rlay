@@ -6,49 +6,57 @@ import { Server, Socket } from "socket.io";
 import { ServerConfiguration } from "./ServerConfiguration";
 import { Request } from "./Request";
 import { Response } from "./Response";
+import { Logger } from "./logger";
 
 const ERROR_NO_CONNECTION = "No socket connected";
 
 export class RlayServer {
   socket: Socket | undefined = undefined;
-  constructor(private config: ServerConfiguration) {
+  constructor(private config: ServerConfiguration, private logger: Logger) {
     const server = this.createServer();
     server.listen(this.config.port, () => {
-      console.log(`Listening for HTTP requests on ${this.config.port}`);
+      this.logger.info(`Listening for HTTP requests on ${this.config.port}`);
     });
   }
 
   private createServer() {
     const app = express();
     const server = http.createServer(app);
-    const io = new Server(server);
+    const io = new Server(server, {
+      maxHttpBufferSize: 1e15
+    });
     io.on("connection", this.handleNewConnection.bind(this));
     app.all("*", this.handleRequest.bind(this));
     return server;
   }
 
   private handleNewConnection(newSocket: Socket) {
-    console.log(`Client connection request`);
+    this.logger.info(`Client connection request`);
     if (newSocket.handshake.auth.password !== this.config.password) {
-      console.error(`Password does not match. Rejecting connection`);
+      this.logger.error(`Password does not match. Rejecting connection`);
       newSocket.emit("incorrect password");
       newSocket.disconnect(true);
       return;
     }
     if (this.socket !== undefined) {
-      console.log(`Replacing old socket`);
+      this.logger.info(`Replacing old socket`);
       this.socket.disconnect(true);
     }
     this.socket = newSocket;
-    console.log("Connected");
-    this.socket.on("disconnect", () => {
-      console.log("Client disconnected");
+    this.logger.info("Connected");
+    this.socket.on("disconnect", (err) => {
+      this.logger.info(`Client disconnected: ${err}`);
       this.socket = undefined;
     });
+    this.socket.on("error", (err) => {
+      this.logger.error(`Socket error: ${err}`)
+    })
   }
 
   private handleRequest(req: express.Request, res: express.Response) {
+    this.logger.debug(`Received new request`)
     if (req.path.indexOf("socket.io") >= 0) {
+      this.logger.debug(`Socket connection - leaving that to socket.io`)
       return;
     }
     this.getRequestBodyAsync(req)
@@ -70,22 +78,32 @@ export class RlayServer {
 
   private getRequestBodyAsync(req: express.Request): Promise<Buffer> {
     return new Promise((resolve) => {
+      this.logger.debug(`Collecting request body`)
       let body = Buffer.from([]);
-      req.on("data", (chunk) => (body = Buffer.concat([body, chunk])));
-      req.on("end", () => resolve(body));
+      req.on("data", (chunk) => {
+        this.logger.debug(`Collected data for request body`)
+        body = Buffer.concat([body, chunk])
+      });
+      req.on("end", () => {
+        this.logger.debug(`Request body complete`)
+        resolve(body)
+      });
     });
   }
 
   private forwardResponseToCaller(response: Response, res: express.Response) {
+    this.logger.debug(`Forwarding response to caller`)
     this.copyHeaders(response, res);
     res.statusCode = response.statusCode;
     if (response.body) {
       res.write(Buffer.from(response.body, "base64"));
     }
     res.send();
+    this.logger.debug(`Done forwarding response`)
   }
 
   private copyHeaders(response: Response, res: express.Response) {
+    this.logger.debug(`Copying headers`)
     Object.keys(response.headers).forEach((key) => {
       res.setHeader(key, response.headers[key]);
     });
@@ -94,13 +112,13 @@ export class RlayServer {
   private forwardRequestToRlayClientAsync(request: Request): Promise<Response> {
     return new Promise((resolve, reject) => {
       if (!this.socket) {
+        this.logger.error(`Tried to forward request, but no client connected`)
         return reject(Error(ERROR_NO_CONNECTION));
       }
-      console.log(`Transmitting request ${request.id}`);
+      this.logger.info(`Transmitting request ${request.id}`);
       this.socket.emit("request received", request);
-      // TODO: handle timeout
       this.socket.once(`response for ${request.id}`, (response: Response) => {
-        console.log(`Received response`);
+        this.logger.info(`Received response`);
         resolve(response);
       });
     });
@@ -113,11 +131,11 @@ export class RlayServer {
     if (error.message === ERROR_NO_CONNECTION) {
       res.statusCode = 502;
       res.send("No client connected");
-      console.error("Request received but no client connected");
+      this.logger.error("Request received but no client connected");
     } else {
       res.statusCode = 503;
       res.send(error);
-      console.error("Other error: " + error);
+      this.logger.error("Other error: " + error);
     }
   }
 }

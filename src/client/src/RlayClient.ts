@@ -34,8 +34,8 @@ export class RlayClient {
     socket.on("connect", () => {
       console.log(`Connected to ${url}`);
     });
-    socket.on("disconnect", () => {
-      console.log(`Disconnected. Attempting reconnection`);
+    socket.on("disconnect", (reason: string) => {
+      console.log(`Disconnected. Reason: ${reason}. Attempting reconnection`);
     });
     return socket;
   }
@@ -43,8 +43,7 @@ export class RlayClient {
   private processRequest(request: Request) {
     const date = new Date();
     process.stdout.write(
-      `${date.getHours()}:${date.getMinutes()} ${request.method} ${
-        request.path
+      `${date.getHours()}:${date.getMinutes()} ${request.method} ${request.path
       }: `
     );
     this.forwardRequestAsync(request)
