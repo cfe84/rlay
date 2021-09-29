@@ -5,10 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha --require ts-node/register ./test/**/*.ts",
-    "build": "tsc",
+    "build": "tsc && npm run copy-static",
     "clean": "rimraf dist/",
     "rebuild": "npm run clean && npm run build",
     "prepublish": "cp ../../README.md ./ && npm run rebuild",
+    "copy-static": "node copyStatic.js",
     "start": "node dist/index.js",
     "bns": "npm run build && npm run start"
   },

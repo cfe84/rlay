@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as http from "http";
+import * as path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { Server, Socket } from "socket.io";
 
@@ -9,14 +10,42 @@ import { Response } from "./Response";
 import { Logger } from "./Logger";
 
 const ERROR_NO_CONNECTION = "No socket connected";
+const MAX_LOGS_DEFAULT = 50;
+
+interface CallLog {
+  date: Date,
+  request?: Request,
+  response?: Response
+}
+
+interface State {
+  client: {
+    connected: boolean
+  },
+  captureLogs: boolean
+}
 
 export class RlayServer {
   socket: Socket | undefined = undefined;
+
+  private logs: CallLog[] = []
+  private maxLogs = MAX_LOGS_DEFAULT
+  private captureLogs = false
+
   constructor(private config: ServerConfiguration, private logger: Logger) {
     const server = this.createServer();
     server.listen(this.config.port, () => {
       this.logger.info(`Listening for HTTP requests on ${this.config.port}`);
     });
+  }
+
+  private addCallLog(log: CallLog) {
+    if (this.captureLogs) {
+      this.logs.push(log)
+      while (this.logs.length > this.maxLogs) {
+        this.logs.shift()
+      }
+    }
   }
 
   private createServer() {
@@ -26,8 +55,65 @@ export class RlayServer {
       maxHttpBufferSize: 1e15
     });
     io.on("connection", this.handleNewConnection.bind(this));
+    app.use("/rlay", express.static(path.join(__dirname, "static")))
+    app.get("/rlay/calls", this.getCalls.bind(this))
+    app.get("/rlay/login", this.login.bind(this))
+    app.get("/rlay/state", this.getState.bind(this))
+    app.patch("/rlay/state", this.patchState.bind(this))
     app.all("*", this.handleRequest.bind(this));
     return server;
+  }
+
+  private login(req: express.Request, res: express.Response) {
+    if (req.headers["password"] !== this.config.password) {
+      res.statusCode = 403
+      res.send(JSON.stringify("Wrong password"))
+      return
+    }
+    res.send('{"status": "success"}')
+  }
+
+  private getCalls(req: express.Request, res: express.Response) {
+    if (req.headers["password"] !== this.config.password) {
+      res.statusCode = 403
+      res.send(JSON.stringify("Wrong password"))
+      return
+    }
+    res.contentType("application/json")
+    res.write(JSON.stringify(this.logs, null, 2))
+    res.send()
+  }
+
+  private getState(req: express.Request, res: express.Response) {
+    if (req.headers["password"] !== this.config.password) {
+      res.statusCode = 403
+      res.send(JSON.stringify("Wrong password"))
+      return
+    }
+    res.contentType("application/json")
+    const state: State = {
+      client: {
+        connected: this.socket !== undefined
+      },
+      captureLogs: this.captureLogs
+    }
+    res.write(JSON.stringify(state, null, 2))
+    res.send()
+  }
+
+  private async patchState(req: express.Request, res: express.Response) {
+    if (req.headers["password"] !== this.config.password) {
+      res.statusCode = 403
+      res.send(JSON.stringify("Wrong password"))
+      return
+    }
+
+    const body = await this.getRequestBodyAsync(req, false)
+    const patchRequest = JSON.parse(body.toString()) as Partial<State>
+    if (patchRequest.captureLogs !== undefined) {
+      this.captureLogs = patchRequest.captureLogs
+    }
+    res.send("{}")
   }
 
   private handleNewConnection(newSocket: Socket) {
@@ -59,6 +145,10 @@ export class RlayServer {
       this.logger.debug(`Socket connection - leaving that to socket.io`)
       return;
     }
+    const log: CallLog = {
+      date: new Date(),
+    }
+    this.addCallLog(log)
     this.getRequestBodyAsync(req)
       .then((body) => {
         const requestId = uuidv4();
@@ -69,23 +159,27 @@ export class RlayServer {
           headers: req.rawHeaders,
           id: requestId,
         };
+        log.request = request
         return request;
       })
       .then(this.forwardRequestToRlayClientAsync.bind(this))
-      .then((response) => this.forwardResponseToCaller(response, res))
+      .then((response) => {
+        log.response = response
+        this.forwardResponseToCaller(response, res)
+      })
       .catch((error) => this.handleRlayClientError(error, res));
   }
 
-  private getRequestBodyAsync(req: express.Request): Promise<Buffer> {
+  private getRequestBodyAsync(req: express.Request, log = false): Promise<Buffer> {
     return new Promise((resolve) => {
-      this.logger.debug(`Collecting request body`)
+      log && this.logger.debug(`Collecting request body`)
       let body = Buffer.from([]);
       req.on("data", (chunk) => {
-        this.logger.debug(`Collected data for request body`)
+        log && this.logger.debug(`Collected data for request body`)
         body = Buffer.concat([body, chunk])
       });
       req.on("end", () => {
-        this.logger.debug(`Request body complete`)
+        log && this.logger.debug(`Request body complete`)
         resolve(body)
       });
     });
