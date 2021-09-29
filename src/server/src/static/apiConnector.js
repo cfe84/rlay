@@ -4,8 +4,12 @@ function sendQueryAsync(url, method = "GET", body = undefined, headers = {}) {
     request.onreadystatechange = function () {
       if (this.readyState === 4) {
         if (this.status < 400) {
-          const response = JSON.parse(this.responseText)
-          resolve(response)
+          if (this.responseText) {
+            const response = JSON.parse(this.responseText)
+            resolve(response)
+          } else {
+            resolve()
+          }
         } else {
           reject(Error(this.responseText))
         }
@@ -24,6 +28,10 @@ function sendQueryAsync(url, method = "GET", body = undefined, headers = {}) {
 
 export async function getCallsAsync(password) {
   return await sendQueryAsync("calls", "GET", undefined, { password })
+}
+
+export async function deleteCallsAsync(password) {
+  return await sendQueryAsync("calls", "DELETE", undefined, { password })
 }
 
 export async function getConnectionStatusAsync(password) {

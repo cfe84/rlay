@@ -57,6 +57,7 @@ export class RlayServer {
     io.on("connection", this.handleNewConnection.bind(this));
     app.use("/rlay", express.static(path.join(__dirname, "static")))
     app.get("/rlay/calls", this.getCalls.bind(this))
+    app.delete("/rlay/calls", this.deleteCalls.bind(this))
     app.get("/rlay/login", this.login.bind(this))
     app.get("/rlay/state", this.getState.bind(this))
     app.patch("/rlay/state", this.patchState.bind(this))
@@ -84,6 +85,16 @@ export class RlayServer {
     res.send()
   }
 
+  private deleteCalls(req: express.Request, res: express.Response) {
+    if (req.headers["password"] !== this.config.password) {
+      res.statusCode = 403
+      res.send(JSON.stringify("Wrong password"))
+      return
+    }
+    this.logs = []
+    res.send()
+  }
+
   private getState(req: express.Request, res: express.Response) {
     if (req.headers["password"] !== this.config.password) {
       res.statusCode = 403
@@ -100,6 +111,8 @@ export class RlayServer {
     res.write(JSON.stringify(state, null, 2))
     res.send()
   }
+
+
 
   private async patchState(req: express.Request, res: express.Response) {
     if (req.headers["password"] !== this.config.password) {

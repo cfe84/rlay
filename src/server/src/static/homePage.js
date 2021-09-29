@@ -1,11 +1,12 @@
 import { html } from "./html.js"
-import { getConnectionStatusAsync, getCallsAsync, patchConnectionStatusAsync } from "./apiConnector.js"
+import { getConnectionStatusAsync, getCallsAsync, patchConnectionStatusAsync, deleteCallsAsync } from "./apiConnector.js"
 
 export function homePage({ password }) {
 
   const connectionStatus = html`<input type="text" class="form-control" disabled placeholder="Status" aria-label="Status" aria-describedby="basic-addon1" value="Unknown"/>`
   const log = html`<tbody></tbody>`
   const refreshButton = html`<button class="btn btn-outline-primary">Refresh</button>`
+  const cleanupButton = html`<button class="btn btn-outline-danger">Clear log</button>`
   const captureLogsCheckbox = html`<input class="form-check-input" type="checkbox" id="capture"/>`
   const captureConfirmation = html`<input type="text" class="form-control" disabled placeholder="Status" aria-label="Status" aria-describedby="basic-addon2" value="Unknown"/>`
 
@@ -47,6 +48,10 @@ export function homePage({ password }) {
       })
   }
 
+  cleanupButton.onclick = () => {
+    deleteCallsAsync(password).then(refreshCalls)
+  }
+
   function refresh() {
     refreshConnection()
     refreshCalls()
@@ -75,6 +80,7 @@ export function homePage({ password }) {
     </label>
   </div>
   <h2>Call log</h2>
+  ${cleanupButton}
   <div class="table-responsive">
     <table class="table table-striped table-hover table-sm">
       <thead>
