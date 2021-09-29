@@ -165,12 +165,14 @@ export class RlayServer {
     this.getRequestBodyAsync(req)
       .then((body) => {
         const requestId = uuidv4();
+        const size = body.byteLength
         const request: Request = {
           method: req.method,
           path: req.path,
           body: body.toString("base64"),
           headers: req.rawHeaders,
           id: requestId,
+          bodySize: size
         };
         log.request = request
         return request;
@@ -203,7 +205,9 @@ export class RlayServer {
     this.copyHeaders(response, res);
     res.statusCode = response.statusCode;
     if (response.body) {
-      res.write(Buffer.from(response.body, "base64"));
+      const responseBody = Buffer.from(response.body, "base64")
+      response.bodySize = responseBody.byteLength
+      res.write(responseBody);
     }
     res.send();
     this.logger.debug(`Done forwarding response`)

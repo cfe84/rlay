@@ -3,5 +3,6 @@ export interface Request {
   method: string,
   headers: string[],
   body: string,
-  id: string
+  id: string,
+  bodySize: number
 }
