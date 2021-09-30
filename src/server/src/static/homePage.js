@@ -66,6 +66,19 @@ export function homePage({ password }) {
 
   function refreshCalls() {
     clearHeaders()
+    const mapStatusToIcon = (status) => {
+      if (!status) {
+        return "❓"
+      } else if (status < 300) {
+        return "✔️"
+      } else if (status < 400) {
+        return "➡️"
+      } else if (status < 500) {
+        return "⚠️"
+      } else {
+        return "❌"
+      }
+    }
     const children = [...log.children]
     children.forEach(child => log.removeChild(child))
     getCallsAsync(password)
@@ -78,7 +91,7 @@ export function homePage({ password }) {
   <td>${str(date.toLocaleTimeString())}</td>
   <td>${str(call.request.method)}</td>
   <td>${str(call.request.path)}</td>
-  <td>${str(call.response?.statusCode)}</td>
+  <td>${mapStatusToIcon(call.response?.statusCode)} ${str(call.response?.statusCode)}</td>
   <td>${str(call.request.body?.length)}</td>
   <td>${str(call.response?.body?.length)}</td>
 </tr >
