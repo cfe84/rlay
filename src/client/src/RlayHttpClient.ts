@@ -5,7 +5,7 @@ import { Request } from "./Request";
 import { Response } from "./Response";
 import { IncomingMessage } from "http";
 
-export class RlayClient {
+export class RlayHttpClient {
   private socket: Socket;
 
   constructor(private config: Configuration) {
@@ -30,9 +30,9 @@ export class RlayClient {
   ): Socket {
     const url = `${relayHost}:${relayPort}`;
     const socket = io(url, { auth: { password } });
-    console.log(`Connecting to ${url}`);
+    console.log(`Connecting HTTP to ${url}`);
     socket.on("connect", () => {
-      console.log(`Connected to ${url}`);
+      console.log(`Connected HTTP to ${url}`);
     });
     socket.on("disconnect", (reason: string) => {
       console.log(`Disconnected. Reason: ${reason}. Attempting reconnection`);
@@ -60,7 +60,7 @@ export class RlayClient {
           port: this.config.localPort,
           path: request.path,
           method: request.method,
-          headers: RlayClient.parseHeaders(request.headers),
+          headers: RlayHttpClient.parseHeaders(request.headers),
         },
         (res) => {
           resolve(res);
@@ -85,7 +85,7 @@ export class RlayClient {
       res.on("end", () => {
         const response: Response = {
           body: body.toString("base64"),
-          headers: RlayClient.parseHeaders(res.rawHeaders),
+          headers: RlayHttpClient.parseHeaders(res.rawHeaders),
           statusCode: res.statusCode || 0,
         };
         resolve(response);

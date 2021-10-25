@@ -34,6 +34,7 @@ export class ConfigurationLoader {
         description: "Host of local server. Default is localhost",
       },
       { name: "password", type: String, description: "Rlay password" },
+      { name: "tcp", alias: "t", type: Boolean, description: "Use TCP instead of HTTP" },
       { name: "help", type: Boolean, description: "Display command-line help" },
     ];
 
@@ -55,7 +56,7 @@ export class ConfigurationLoader {
 
     try {
       commands = parseCommandLine(options, { dashesAreOptional: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
       displayHelp();
       process.exit(1);
@@ -73,7 +74,8 @@ export class ConfigurationLoader {
     }
 
     const localPort = Number.parseInt(getCommandValue("port") || "0");
-    const relayPort = getCommandValue("relay-port") || 443;
+    const tcp = getCommandValue("tcp") || false
+    const relayPort = getCommandValue("relay-port") || (tcp ? 444 : 443);
     const localHost = getCommandValue("host") || "localhost";
     const relayHost = getCommandValue("relay-host") || process.env.RLAY_HOST;
     const password = getCommandValue("password") || process.env.RLAY_PASSWORD;
@@ -103,6 +105,7 @@ export class ConfigurationLoader {
       relayPort:
         typeof relayPort === "number" ? relayPort : Number.parseInt(relayPort),
       password: password as string,
+      type: tcp ? "tcp" : "http"
     };
   }
 }

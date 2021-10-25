@@ -2,4 +2,6 @@ src/client/dist/
 src/client/node_modules/
 src/server/dist/
 src/server/node_modules/
+src/common/dist/
+src/common/node_modules/
 .env

@@ -25,7 +25,7 @@ interface State {
   captureLogs: boolean
 }
 
-export class RlayServer {
+export class RlayHttpServer {
   socket: Socket | undefined = undefined;
 
   private logs: CallLog[] = []
@@ -34,8 +34,8 @@ export class RlayServer {
 
   constructor(private config: ServerConfiguration, private logger: Logger) {
     const server = this.createServer();
-    server.listen(this.config.port, () => {
-      this.logger.info(`Listening for HTTP requests on ${this.config.port}`);
+    server.listen(this.config.port.http, () => {
+      this.logger.info(`Listening for HTTP requests on ${this.config.port.http}`);
     });
   }
 
