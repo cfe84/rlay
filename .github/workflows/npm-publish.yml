@@ -9,7 +9,22 @@ on:
 
 jobs:
 
+  build-common:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/common/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npm publish
+
   publish-client:
+    needs: build-common
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,6 +42,7 @@ jobs:
 
 
   publish-server:
+    needs: build-common
     runs-on: ubuntu-latest
     defaults:
       run:
