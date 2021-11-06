@@ -1,4 +1,6 @@
 import { Socket, SocketConnectOpts } from "net";
+import { } from "crypto-js"
+import { createSecretKey, KeyObject } from "crypto"
 
 const callback = (resolve: () => void, reject: (reason?: any) => void) => {
   return (err: Error | undefined) => {
@@ -11,7 +13,10 @@ const callback = (resolve: () => void, reject: (reason?: any) => void) => {
 }
 
 export class AsyncSocket {
-  constructor(public socket: Socket) { }
+  key: KeyObject
+  constructor(public socket: Socket, password: string) {
+    this.key = createSecretKey(password, "ascii")
+  }
 
   connectAsync(options: SocketConnectOpts): Promise<void> {
     return new Promise((resolve) => {
@@ -22,6 +27,8 @@ export class AsyncSocket {
   }
 
   writeAsync(buffer: Buffer | string): Promise<void> {
+    // @todo Encrypt
+    // const encrypted = cypher
     return new Promise((resolve, reject) => {
       this.socket.write(buffer, callback(resolve, reject))
     })
@@ -35,7 +42,14 @@ export class AsyncSocket {
 
   on(event: string | "close" | "connect" | "data" | "drain" | "end" | "error" | "lookup" | "timeout",
     listener: (...args: any[]) => void): AsyncSocket {
-    this.socket.on(event, listener)
+    if (event === "data") {
+      this.socket.on("data", (data) => {
+        // @todo Decrypt
+        listener(data)
+      })
+    } else {
+      this.socket.on(event, listener)
+    }
     return this
   }
 }
