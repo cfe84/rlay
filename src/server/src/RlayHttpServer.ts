@@ -1,11 +1,12 @@
 import * as express from "express";
 import * as http from "http";
 import * as path from "path";
+import * as url from "url"
 import { v4 as uuidv4 } from "uuid";
 import { Server, Socket } from "socket.io";
 
 import { ServerConfiguration } from "./ServerConfiguration";
-import { Request, Response } from "rlay-common";
+import { HttpRequest, HttpResponse } from "rlay-common";
 import { Logger } from "./Logger";
 
 const ERROR_NO_CONNECTION = "No socket connected";
@@ -13,8 +14,8 @@ const MAX_LOGS_DEFAULT = 50;
 
 interface CallLog {
   date: Date,
-  request?: Request,
-  response?: Response
+  request?: HttpRequest,
+  response?: HttpResponse
 }
 
 interface State {
@@ -165,9 +166,9 @@ export class RlayHttpServer {
       .then((body) => {
         const requestId = uuidv4();
         const size = body.byteLength
-        const request: Request = {
+        const request: HttpRequest = {
           method: req.method,
-          path: req.path,
+          path: req.originalUrl,
           body: body.toString("base64"),
           headers: req.rawHeaders,
           id: requestId,
@@ -199,7 +200,7 @@ export class RlayHttpServer {
     });
   }
 
-  private forwardResponseToCaller(response: Response, res: express.Response) {
+  private forwardResponseToCaller(response: HttpResponse, res: express.Response) {
     this.logger.debug(`Forwarding response to caller`)
     this.copyHeaders(response, res);
     res.statusCode = response.statusCode;
@@ -212,14 +213,14 @@ export class RlayHttpServer {
     this.logger.debug(`Done forwarding response`)
   }
 
-  private copyHeaders(response: Response, res: express.Response) {
+  private copyHeaders(response: HttpResponse, res: express.Response) {
     this.logger.debug(`Copying headers`)
     Object.keys(response.headers).forEach((key) => {
       res.setHeader(key, response.headers[key]);
     });
   }
 
-  private forwardRequestToRlayClientAsync(request: Request): Promise<Response> {
+  private forwardRequestToRlayClientAsync(request: HttpRequest): Promise<HttpResponse> {
     return new Promise((resolve, reject) => {
       if (!this.socket) {
         this.logger.error(`Tried to forward request, but no client connected`)
@@ -227,7 +228,7 @@ export class RlayHttpServer {
       }
       this.logger.info(`Transmitting request ${request.id}`);
       this.socket.emit("request received", request);
-      this.socket.once(`response for ${request.id}`, (response: Response) => {
+      this.socket.once(`response for ${request.id}`, (response: HttpResponse) => {
         this.logger.info(`Received response`);
         resolve(response);
       });

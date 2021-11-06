@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import * as http from "http";
 import * as https from "https";
 import { ClientRequest, IncomingMessage, RequestOptions } from "http";
-import { Request, Response } from "rlay-common"
+import { HttpRequest, HttpResponse } from "rlay-common"
 
 interface Protocol {
   request(options: RequestOptions, callback?: (res: IncomingMessage) => void): ClientRequest;
@@ -52,7 +52,7 @@ export class RlayHttpClient {
     return socket;
   }
 
-  private processRequest(request: Request) {
+  private processRequest(request: HttpRequest) {
     const date = new Date();
     process.stdout.write(
       `${date.getHours()}:${date.getMinutes()} ${request.method} ${request.path
@@ -64,7 +64,7 @@ export class RlayHttpClient {
       .catch((error) => this.forwardError(request.id, error));
   }
 
-  private forwardRequestAsync(request: Request): Promise<IncomingMessage> {
+  private forwardRequestAsync(request: HttpRequest): Promise<IncomingMessage> {
     return new Promise((resolve, reject) => {
       const req = this.protocol.request(
         {
@@ -88,14 +88,14 @@ export class RlayHttpClient {
     });
   }
 
-  private processHttpResponseAsync(res: IncomingMessage): Promise<Response> {
+  private processHttpResponseAsync(res: IncomingMessage): Promise<HttpResponse> {
     return new Promise((resolve) => {
       let body: Buffer = Buffer.from([]);
       res.on("data", (chunk) => {
         body = Buffer.concat([body, chunk]);
       });
       res.on("end", () => {
-        const response: Response = {
+        const response: HttpResponse = {
           body: body.toString("base64"),
           bodySize: body.byteLength,
           headers: RlayHttpClient.parseHeaders(res.rawHeaders),
@@ -106,14 +106,14 @@ export class RlayHttpClient {
     });
   }
 
-  private forwardResponse(requestId: string, response: Response) {
+  private forwardResponse(requestId: string, response: HttpResponse) {
     console.log(response.statusCode);
     this.socket.emit(`response for ${requestId}`, response);
   }
 
   private forwardError(requestId: string, error: Error) {
     const body = `Error in relay: ${error}`
-    const response: Response = {
+    const response: HttpResponse = {
       statusCode: 500,
       body: Buffer.from(body).toString("base64"),
       headers: {},
