@@ -2,9 +2,8 @@ import { Configuration } from "./Configuration";
 import { io, Socket } from "socket.io-client";
 import * as http from "http";
 import * as https from "https";
-import { Request } from "./Request";
-import { Response } from "./Response";
 import { ClientRequest, IncomingMessage, RequestOptions } from "http";
+import { Request, Response } from "rlay-common"
 
 interface Protocol {
   request(options: RequestOptions, callback?: (res: IncomingMessage) => void): ClientRequest;
@@ -98,6 +97,7 @@ export class RlayHttpClient {
       res.on("end", () => {
         const response: Response = {
           body: body.toString("base64"),
+          bodySize: body.byteLength,
           headers: RlayHttpClient.parseHeaders(res.rawHeaders),
           statusCode: res.statusCode || 0,
         };
@@ -112,10 +112,12 @@ export class RlayHttpClient {
   }
 
   private forwardError(requestId: string, error: Error) {
+    const body = `Error in relay: ${error}`
     const response: Response = {
       statusCode: 500,
-      body: Buffer.from(`Error in relay: ${error}`).toString("base64"),
+      body: Buffer.from(body).toString("base64"),
       headers: {},
+      bodySize: body.length
     };
     console.log(response.statusCode);
     this.socket.emit(`response for ${requestId}`, response);

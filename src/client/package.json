@@ -6,18 +6,18 @@
   "dependencies": {
     "command-line-usage": "^6.1.1",
     "dotenv": "^10.0.0",
-    "rlay-common": "file:../common",
     "socket.io-client": "^4.1.1",
     "uuid": "^8.3.2",
-    "yaclip": "^1.2.1"
+    "yaclip": "^1.2.1",
+    "rlay-common": "file:../common"
   },
   "devDependencies": {
     "@types/command-line-usage": "^5.0.1",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
     "@types/should": "^13.0.0",
-    "mocha": "^9.1.3",
     "@types/uuid": "^8.3.1",
+    "mocha": "^9.1.3",
     "rimraf": "^3.0.2",
     "should": "^13.2.3",
     "testdouble": "^3.16.1",
