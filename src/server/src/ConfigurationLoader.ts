@@ -5,7 +5,8 @@ dotenv.config();
 
 export class ConfigurationLoader {
   static loadConfiguration(): ServerConfiguration {
-    const port = process.env.RLAY_PORT || 8080;
+    const httpPort = process.env.RLAY_PORT || 8080;
+    const tcpPort = process.env.RLAY_TCP_PORT || 8081;
     const password = process.env.RLAY_PASSWORD;
     if (!password) {
       console.error(`No password specified.`);
@@ -29,7 +30,10 @@ export class ConfigurationLoader {
         break
     }
     return {
-      port: typeof port === "number" ? port : Number.parseInt(port),
+      port: {
+        http: typeof httpPort === "number" ? httpPort : Number.parseInt(httpPort),
+        tcp: typeof tcpPort === "number" ? tcpPort : Number.parseInt(tcpPort),
+      },
       password,
       logLevel
     };

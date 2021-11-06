@@ -4,5 +4,6 @@ export interface Configuration {
   localHost: string
   relayHost: string
   password: string
+  type: "tcp" | "http"
   https: boolean
 }

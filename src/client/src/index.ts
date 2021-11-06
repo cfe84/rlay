@@ -1,7 +1,12 @@
 
 import { ConfigurationLoader } from "./ConfigurationLoader"
-import { RlayClient } from "./RlayClient"
+import { RlayHttpClient } from "./RlayHttpClient"
+import { RlayTcpClient } from "./RlayTcpClient"
 
 
 const configuration = ConfigurationLoader.loadConfiguration()
-new RlayClient(configuration)
+if (configuration.type === "http") {
+  new RlayHttpClient(configuration)
+} else {
+  new RlayTcpClient(configuration)
+}
