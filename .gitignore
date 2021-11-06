@@ -5,3 +5,5 @@ src/server/node_modules/
 src/common/dist/
 src/common/node_modules/
 .env
+src/client/README.md
+src/server/README.md

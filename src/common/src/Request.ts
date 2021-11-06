@@ -3,5 +3,6 @@ export interface Request {
   method: string;
   headers: string[];
   body: string;
+  bodySize: number;
   id: string;
 }
