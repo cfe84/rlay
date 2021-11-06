@@ -28,6 +28,13 @@ export class ConfigurationLoader {
         optional: false,
       },
       {
+        name: "https",
+        alias: "H",
+        type: Boolean,
+        description: "Connect https instead of http.",
+        optional: true,
+      },
+      {
         name: "host",
         alias: "h",
         type: String,
@@ -55,7 +62,7 @@ export class ConfigurationLoader {
 
     try {
       commands = parseCommandLine(options, { dashesAreOptional: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
       displayHelp();
       process.exit(1);
@@ -77,6 +84,7 @@ export class ConfigurationLoader {
     const localHost = getCommandValue("host") || "localhost";
     const relayHost = getCommandValue("relay-host") || process.env.RLAY_HOST;
     const password = getCommandValue("password") || process.env.RLAY_PASSWORD;
+    const https = !!commands["https"]
 
     const checkVariable = (variable: any, message: string) => {
       if (!variable) {
@@ -103,6 +111,7 @@ export class ConfigurationLoader {
       relayPort:
         typeof relayPort === "number" ? relayPort : Number.parseInt(relayPort),
       password: password as string,
+      https
     };
   }
 }

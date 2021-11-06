@@ -1,15 +1,28 @@
 import { Configuration } from "./Configuration";
 import { io, Socket } from "socket.io-client";
 import * as http from "http";
+import * as https from "https";
 import { Request } from "./Request";
 import { Response } from "./Response";
-import { IncomingMessage } from "http";
+import { ClientRequest, IncomingMessage, RequestOptions } from "http";
+
+interface Protocol {
+  request(options: RequestOptions, callback?: (res: IncomingMessage) => void): ClientRequest;
+}
 
 export class RlayClient {
   private socket: Socket;
+  private protocol: Protocol;
 
   constructor(private config: Configuration) {
     const { relayHost, relayPort, password } = config;
+    const useHttps = config.https
+    if (config.https) {
+      console.log(`You chose HTTPS, to help with local development we will ignore invalid certificates. ` +
+        `This will generate a warning.`)
+      process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+    }
+    this.protocol = useHttps ? https : http
     this.socket = this.connect(relayHost, relayPort, password);
     this.socket.on("request received", this.processRequest.bind(this));
     this.socket.on(
@@ -54,7 +67,7 @@ export class RlayClient {
 
   private forwardRequestAsync(request: Request): Promise<IncomingMessage> {
     return new Promise((resolve, reject) => {
-      const req = http.request(
+      const req = this.protocol.request(
         {
           host: this.config.localHost,
           port: this.config.localPort,
