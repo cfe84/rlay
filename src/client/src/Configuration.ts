@@ -5,4 +5,5 @@ export interface Configuration {
   relayHost: string
   password: string
   type: "tcp" | "http"
+  https: boolean
 }
