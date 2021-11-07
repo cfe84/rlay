@@ -29,11 +29,6 @@ jobs:
       run:
         working-directory: ./src/client/
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm publish
         env:
@@ -47,11 +42,6 @@ jobs:
       run:
         working-directory: ./src/server/
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm publish
         env:

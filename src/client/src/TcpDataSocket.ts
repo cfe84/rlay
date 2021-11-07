@@ -1,5 +1,5 @@
 import { Socket } from "net";
-import { AsyncSocket, TcpCommand } from "../../common/dist";
+import { AsyncSocket, TcpCommand } from "rlay-common";
 import { Configuration } from "./Configuration";
 
 export class TcpDataSocket {
@@ -57,11 +57,11 @@ export class TcpDataSocket {
   }
 
   private async setupBridgeAsync(host: string, port: number) {
-    this.localSocket.on("data", (data) => {
+    this.localSocket.on("data", (data: any) => {
       this.buffer.push(data)
       this.sendBufferAsync().then()
     })
-    this.dataSocket.on("data", (data) => {
+    this.dataSocket.on("data", (data: any) => {
       if (!this.localSocket.socket.destroyed) {
         this.localSocket.socket.write(data)
       }
