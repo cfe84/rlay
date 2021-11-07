@@ -7,10 +7,16 @@ RUN cd common && npm install && npm run build
 RUN cd server && npm install && npm run build
 
 FROM node:14-alpine
-WORKDIR /app
+WORKDIR /app/common
+COPY --from=build /app/common/dist ./dist
+COPY --from=build /app/common/node_modules ./node_modules
+COPY common/package.json .
+COPY common/package-lock.json .
+WORKDIR /app/server
 COPY --from=build /app/server/dist ./dist
 COPY --from=build /app/server/node_modules ./node_modules
 COPY server/package.json .
+COPY server/package-lock.json .
 
 EXPOSE 8080
 
