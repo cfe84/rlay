@@ -34,6 +34,8 @@ jobs:
       run:
         working-directory: ./src/client/
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
       - uses: actions/download-artifact@master
         with:
           name: common
@@ -50,6 +52,8 @@ jobs:
       run:
         working-directory: ./src/server/
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
       - uses: actions/download-artifact@master
         with:
           name: common
