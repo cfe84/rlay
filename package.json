@@ -4,7 +4,7 @@
   "description": "Rlay",
   "main": "src/server/dist/index.js",
   "scripts": {
-    "build": "cd src/common && npm run build && cd ../server/ && npm install && npm run build",
+    "build": "cd src/common && npm install && npm run build && cd ../server/ && npm install && npm run build",
     "start": "node src/server/dist/index.js"
   },
   "repository": {
