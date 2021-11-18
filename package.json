@@ -1,6 +1,6 @@
 {
   "name": "rlay",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Rlay",
   "main": "src/server/dist/index.js",
   "scripts": {
