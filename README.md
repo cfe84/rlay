@@ -36,6 +36,18 @@ On your local machine: `npm install -g rlay`, then set an environment variable `
 
 From there on, when the remote service makes http calls, they will be forwarded to your local environment.
 
+# options
+
+-P, --relay-port string   Port on relay server. Default is 443
+-H, --relay-host string   Host of relay server
+-p, --port string         Local port.
+-H, --https               Connect https instead of http.
+-o, --output              Output body in console for debug purposes.
+-h, --host string         Host of local server. Default is localhost
+--password string         Rlay password
+-t, --tcp                 Use TCP instead of HTTP
+--help                    Display command-line help
+
 # deploy to Azure
 
 Rlay can be deployed to a free Webapp on Azure.

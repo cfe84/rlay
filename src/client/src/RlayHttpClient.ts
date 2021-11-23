@@ -82,7 +82,11 @@ export class RlayHttpClient {
         reject(err);
       });
       if (request.body) {
-        req.write(Buffer.from(request.body, "base64"));
+        const body = Buffer.from(request.body, "base64")
+        req.write(body);
+        if (this.config.outputBody) {
+          console.info(`\n===\nRequest ${request.id}: \n${body}\n`)
+        }
       }
       req.end();
     });
@@ -107,7 +111,11 @@ export class RlayHttpClient {
   }
 
   private forwardResponse(requestId: string, response: HttpResponse) {
-    console.log(response.statusCode);
+    if (this.config.outputBody) {
+      console.info(`\n===\nResponse ${requestId}: Code: ${response.statusCode}, Body: \n${Buffer.from(response.body, "base64")}\n`)
+    } else {
+      console.log(response.statusCode);
+    }
     this.socket.emit(`response for ${requestId}`, response);
   }
 

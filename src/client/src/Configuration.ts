@@ -6,4 +6,5 @@ export interface Configuration {
   password: string
   type: "tcp" | "http"
   https: boolean
+  outputBody: boolean
 }

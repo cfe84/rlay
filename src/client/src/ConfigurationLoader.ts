@@ -35,6 +35,13 @@ export class ConfigurationLoader {
         optional: true,
       },
       {
+        name: "output",
+        alias: "o",
+        type: Boolean,
+        description: "Output body in console for debug purposes.",
+        optional: true,
+      },
+      {
         name: "host",
         alias: "h",
         type: String,
@@ -87,6 +94,7 @@ export class ConfigurationLoader {
     const relayHost = getCommandValue("relay-host") || process.env.RLAY_HOST;
     const password = getCommandValue("password") || process.env.RLAY_PASSWORD;
     const https = !!commands["https"]
+    const output = !!commands["output"]
 
     const checkVariable = (variable: any, message: string) => {
       if (!variable) {
@@ -114,7 +122,8 @@ export class ConfigurationLoader {
         typeof relayPort === "number" ? relayPort : Number.parseInt(relayPort),
       password: password as string,
       type: tcp ? "tcp" : "http",
-      https
+      https,
+      outputBody: output
     };
   }
 }
