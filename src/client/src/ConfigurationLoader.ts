@@ -2,6 +2,8 @@ import * as usage from "command-line-usage";
 import { parseCommandLine, ParsingResult } from "yaclip";
 import { Configuration } from "./Configuration";
 import * as dotenv from "dotenv";
+import * as fs from "fs"
+import * as path from "path"
 
 dotenv.config();
 
@@ -48,14 +50,23 @@ export class ConfigurationLoader {
         description: "Host of local server. Default is localhost",
       },
       { name: "password", type: String, description: "Rlay password" },
+      { name: "version", alias: "v", type: Boolean, description: "Display rlay version and quit" },
       { name: "tcp", alias: "t", type: Boolean, description: "Use TCP instead of HTTP" },
       { name: "help", type: Boolean, description: "Display command-line help" },
     ];
 
+    let version = "[package.json file is missing]"
+    const npmFile = path.join(__dirname, "..", "package.json")
+    if (fs.existsSync(npmFile)) {
+      const npmContent = fs.readFileSync(npmFile).toString()
+      const npm = JSON.parse(npmContent) as any;
+      version = npm.version
+    }
+
     function displayHelp() {
       const structure = [
         {
-          header: "rlay - Relay http request to local machine from a server",
+          header: "rlay - Relay http request to local machine from a server. v" + version,
         },
         {
           header: "Commands",
@@ -79,6 +90,11 @@ export class ConfigurationLoader {
     if (commands["help"]) {
       displayHelp();
       process.exit(0);
+    }
+
+    if (commands["version"]) {
+      console.log(version)
+      process.exit(0)
     }
 
     function getCommandValue(commandName: string): string | null {
@@ -123,7 +139,8 @@ export class ConfigurationLoader {
       password: password as string,
       type: tcp ? "tcp" : "http",
       https,
-      outputBody: output
+      outputBody: output,
+      version
     };
   }
 }

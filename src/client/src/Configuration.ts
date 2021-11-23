@@ -7,4 +7,5 @@ export interface Configuration {
   type: "tcp" | "http"
   https: boolean
   outputBody: boolean
+  version: string
 }

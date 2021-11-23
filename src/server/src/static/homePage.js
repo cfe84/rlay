@@ -11,12 +11,14 @@ export function homePage({ password }) {
   const captureConfirmation = html`<input type="text" class="form-control" disabled placeholder="Status" aria-label="Status" aria-describedby="basic-addon2" value="Unknown"/>`
   const requestHeadersTable = html`<tbody></tbody>`
   const responseHeadersTable = html`<tbody></tbody>`
+  const versionSpan = html`<input type="text" class="form-control" disabled placeholder="Version" aria-label="Version" aria-describedby="basic-addon3" value="Unknown"/>`
 
   function refreshConnection() {
     getConnectionStatusAsync(password).then(status => {
       connectionStatus.value = status.client.connected ? "🟢 Connected" : "🔴 Disconnected";
       captureConfirmation.value = status.captureLogs ? "🟢 Capturing" : "🔴 Off";
       captureLogsCheckbox.checked = status.captureLogs
+      versionSpan.value = status.version
     })
   }
 
@@ -131,6 +133,10 @@ export function homePage({ password }) {
   <h1>Rlay status dashboard</h1>
   ${refreshButton}
   <h2>Connection</h2>
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon3">Server version</span>
+    ${versionSpan}
+  </div>
   <div class="input-group mb-3">
     <span class="input-group-text" id="basic-addon1">Connection status</span>
     ${connectionStatus}

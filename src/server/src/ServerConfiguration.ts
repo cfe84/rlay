@@ -7,4 +7,5 @@ export interface ServerConfiguration {
   }
   password: string
   logLevel: LogLevel
+  version: string
 }

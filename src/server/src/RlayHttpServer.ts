@@ -22,7 +22,8 @@ interface State {
   client: {
     connected: boolean
   },
-  captureLogs: boolean
+  captureLogs: boolean,
+  version: string
 }
 
 export class RlayHttpServer {
@@ -106,7 +107,8 @@ export class RlayHttpServer {
       client: {
         connected: this.socket !== undefined
       },
-      captureLogs: this.captureLogs
+      captureLogs: this.captureLogs,
+      version: this.config.version
     }
     res.write(JSON.stringify(state, null, 2))
     res.send()
