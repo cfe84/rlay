@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  444: "{{ .Values.ns }}/{{ .Values.appName }}-service:8081"

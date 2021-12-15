@@ -7,7 +7,12 @@ spec:
   selector:
     app: {{ .Values.appName }}
   ports:
-  - protocol: TCP
+  - name: "http-port"
+    protocol: TCP
     port: 8080
     targetPort: 8080
+  - name: "tcp-port"
+    protocol: TCP
+    port: 8081
+    targetPort: 8081
   type: ClusterIP
