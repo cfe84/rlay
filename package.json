@@ -1,6 +1,6 @@
 {
   "name": "rlay",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Relay HTTP requests through a server to your dev machine. A self hosted alternative to ngrok",
   "main": "src/server/dist/index.js",
   "scripts": {
@@ -10,6 +10,15 @@
   "repository": {
     "type": "git",
     "url": "https://github.org/cfe84/rlay"
+  },
+  "dependencies": {
+    "command-line-usage": "^6.1.1",
+    "dotenv": "^10.0.0",
+    "socket.io-client": "^4.1.1",
+    "uuid": "^8.3.2",
+    "yaclip": "^1.2.1",
+    "express": "^4.17.1",
+    "socket.io": "^4.1.1"
   },
   "keywords": [],
   "author": "Charles Feval",
