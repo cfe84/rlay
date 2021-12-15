@@ -22,6 +22,16 @@ Rlay's code is on [GitHub](https://github.com/cfe84/rlay), as well as a Kubernet
 
 The recommended deployment is on any kubernetes server you would have dangling around. A helm chart is available in the server's directory, which contains an ingress and certificate.
 
+To make TCP work with Ingress, you need to update the ingress service (a.k.a load balancer) with the additional TCP port:
+
+```yml
+    - name: proxied-tcp-444
+      protocol: TCP
+      port: 444
+      targetPort: 444
+      nodePort: 32092
+```
+
 # setup
 
 On the server: deploy rlay either with docker, npm, or using kubernetes. Set the environment variable `RLAY_PASSWORD` to whatever password you want, and `RLAY_PORT` to the port to be listened. Rlay will not start if a password is not provided.
