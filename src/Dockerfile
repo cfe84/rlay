@@ -19,6 +19,8 @@ COPY server/package.json .
 COPY server/package-lock.json .
 
 EXPOSE 8080
+EXPOSE 8081
 
 ENV RLAY_PORT=8080
+ENV RLAY_TCP_PORT=8081
 ENTRYPOINT npm run start
