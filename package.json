@@ -1,6 +1,6 @@
 {
   "name": "rlay",
-  "version": "1.4.6",
+  "version": "1.4.8",
   "description": "Relay HTTP requests through a server to your dev machine. A self hosted alternative to ngrok",
   "main": "src/server/dist/index.js",
   "scripts": {
