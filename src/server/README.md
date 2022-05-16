@@ -22,6 +22,16 @@ Rlay's code is on [GitHub](https://github.com/cfe84/rlay), as well as a Kubernet
 
 The recommended deployment is on any kubernetes server you would have dangling around. A helm chart is available in the server's directory, which contains an ingress and certificate.
 
+To make TCP work with Ingress, you need to update the ingress service (a.k.a load balancer) with the additional TCP port:
+
+```yml
+    - name: proxied-tcp-444
+      protocol: TCP
+      port: 444
+      targetPort: 444
+      nodePort: 32092
+```
+
 # setup
 
 On the server: deploy rlay either with docker, npm, or using kubernetes. Set the environment variable `RLAY_PASSWORD` to whatever password you want, and `RLAY_PORT` to the port to be listened. Rlay will not start if a password is not provided.
@@ -35,6 +45,18 @@ On your local machine: `npm install -g rlay`, then set an environment variable `
 - Start the rlay client: `rlay --port 8080`
 
 From there on, when the remote service makes http calls, they will be forwarded to your local environment.
+
+# options
+
+-P, --relay-port string   Port on relay server. Default is 443
+-H, --relay-host string   Host of relay server
+-p, --port string         Local port.
+-H, --https               Connect https instead of http.
+-o, --output              Output body in console for debug purposes.
+-h, --host string         Host of local server. Default is localhost
+--password string         Rlay password
+-t, --tcp                 Use TCP instead of HTTP
+--help                    Display command-line help
 
 # deploy to Azure
 

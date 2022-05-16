@@ -17,7 +17,7 @@ export class ConfigurationLoader {
     }
 
     let version = "[package.json file is missing]"
-    const npmFile = path.join(__dirname, "..", "package.json")
+    const npmFile = path.join(__dirname, "..", "..", "..", "package.json")
     if (fs.existsSync(npmFile)) {
       const npmContent = fs.readFileSync(npmFile).toString()
       const npm = JSON.parse(npmContent) as any;

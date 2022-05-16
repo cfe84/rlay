@@ -35,12 +35,20 @@ export class RlayHttpClient {
     this.socket.disconnect();
   }
 
+  private processUrl(relayHost: string, relayPort: number) {
+    if (relayHost.startsWith("http://") || relayHost.startsWith("https://")) {
+      return `${relayHost}:${relayPort}`
+    }
+    return `https://${relayHost}:${relayPort}`
+  }
+
   private connect(
     relayHost: string,
     relayPort: number,
     password: string
   ): Socket {
-    const url = `${relayHost}:${relayPort}`;
+
+    const url = this.processUrl(relayHost, relayPort);
     const socket = io(url, { auth: { password } });
     console.log(`Connecting HTTP to ${url}`);
     socket.on("connect", () => {
@@ -112,7 +120,7 @@ export class RlayHttpClient {
 
   private forwardResponse(requestId: string, response: HttpResponse) {
     if (this.config.outputBody) {
-      console.info(`\n===\nResponse ${requestId}: Code: ${response.statusCode}, Body: \n${Buffer.from(response.body, "base64")}\n`)
+      console.info(`\n===\nResponse ${requestId}: Code: ${response.statusCode}, Body: ---\n${Buffer.from(response.body, "base64")}\n---\n`)
     } else {
       console.log(response.statusCode);
     }

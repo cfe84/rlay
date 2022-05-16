@@ -5,7 +5,8 @@
   "main": "src/server/dist/index.js",
   "scripts": {
     "build": "cd src/common && npm install && npm run build && cd ../server/ && npm install && npm run build && cd ../client/ && npm install && npm run build",
-    "start": "node src/server/dist/index.js"
+    "start": "node src/server/dist/index.js",
+    "start-client": "node src/client/dist/index.js"
   },
   "repository": {
     "type": "git",
