@@ -16,7 +16,7 @@ jobs:
       - name: Set AKS context
         uses: azure/aks-set-context@v1
         with:
-          # create with `az ad sp create-for-rbac --sdk-auth`
+          # create with `az ad sp create-for-rbac --sdk-auth --name DropDeploy`
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ secrets.AZURE_CLUSTER_NAME }}
           resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
