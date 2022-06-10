@@ -48,7 +48,7 @@
   "author": "Charles Feval",
   "license": "ISC",
   "bin": {
-    "rlay": "./src/client/bin/rlay",
-    "rlay-server": "./src/server/bin/rlay-server"
+    "rlay": "./bin/rlay",
+    "rlay-server": "./bin/rlay-server"
   }
 }
