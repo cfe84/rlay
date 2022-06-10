@@ -13,7 +13,7 @@
     "bns": "npm run build && npm run start",
     "start": "node dist/server/src/index.js",
     "start-client": "node dist/client/src/index.js",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
