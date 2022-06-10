@@ -1,6 +1,6 @@
 {
   "name": "rlay",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Relay HTTP requests through a server to your dev machine. A self hosted alternative to ngrok",
   "main": "src/server/dist/index.js",
   "engines": {
@@ -12,7 +12,8 @@
     "build": "tsc && node copyStatic.js",
     "bns": "npm run build && npm run start",
     "start": "node dist/server/src/index.js",
-    "start-client": "node dist/client/src/index.js"
+    "start-client": "node dist/client/src/index.js",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
