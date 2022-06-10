@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Server, Socket } from "socket.io";
 
 import { ServerConfiguration } from "./ServerConfiguration";
-import { HttpRequest, HttpResponse } from "rlay-common";
+import { HttpRequest, HttpResponse } from "../../common/src";
 import { Logger } from "./Logger";
 
 const ERROR_NO_CONNECTION = "No socket connected";

@@ -1,6 +1,6 @@
 import { Socket } from "net";
 import { Configuration } from "./Configuration";
-import { CommandMessage, TcpCommand, TcpDataHandler, AsyncSocket } from "rlay-common"
+import { CommandMessage, TcpCommand, TcpDataHandler, AsyncSocket } from "../../common/src"
 import { TcpDataSocket } from "./TcpDataSocket";
 
 const ERROR_CONNECTION_RESET = `read ECONNRESET`;

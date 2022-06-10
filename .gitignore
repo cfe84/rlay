@@ -1,9 +1,5 @@
-src/client/dist/
-src/client/node_modules/
-src/server/dist/
-src/server/node_modules/
-src/common/dist/
-src/common/node_modules/
+dist/
+node_modules/
 .env
 src/client/README.md
 src/server/README.md

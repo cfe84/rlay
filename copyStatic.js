@@ -1,8 +1,8 @@
 const path = require("path")
 const fs = require("fs")
 
-const src = path.join("src", "static")
-const dest = path.join("dist", "static")
+const src = path.join("src", "server", "src", "static")
+const dest = path.join("dist", "server", "src", "static")
 
 
 function copyRec(fromFolder, toFolder) {

@@ -15,7 +15,8 @@ const callback = (resolve: () => void, reject: (reason?: any) => void) => {
 export class AsyncSocket {
   key: KeyObject
   constructor(public socket: Socket, password: string) {
-    this.key = createSecretKey(password, "ascii")
+    const pass =
+      this.key = createSecretKey(password, "ascii")
   }
 
   connectAsync(options: SocketConnectOpts): Promise<void> {
