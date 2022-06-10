@@ -1,8 +1,11 @@
 FROM node:16-alpine as build
 WORKDIR /app
-COPY ./src ./src
+COPY ./copyStatic.js .
+COPY ./tsconfig.json .
 COPY ./package*.json .
-RUN npm install && npm run build
+RUN npm install
+COPY ./src ./src
+RUN npm run build
 
 FROM node:16-alpine
 WORKDIR /app
