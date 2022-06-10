@@ -2,6 +2,5 @@ copyStatic.js
 Dockerfile
 tsconfig.json
 .env
-./src/
 .github
 azure-deploy
