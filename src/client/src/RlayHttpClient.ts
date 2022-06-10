@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import * as http from "http";
 import * as https from "https";
 import { ClientRequest, IncomingMessage, RequestOptions } from "http";
-import { HttpRequest, HttpResponse } from "rlay-common"
+import { HttpRequest, HttpResponse } from "../../common/src"
 
 interface Protocol {
   request(options: RequestOptions, callback?: (res: IncomingMessage) => void): ClientRequest;

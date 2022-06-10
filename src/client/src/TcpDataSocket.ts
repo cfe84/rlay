@@ -1,5 +1,5 @@
 import { Socket } from "net";
-import { AsyncSocket, TcpCommand } from "rlay-common";
+import { AsyncSocket, TcpCommand } from "../../common/src";
 import { Configuration } from "./Configuration";
 
 export class TcpDataSocket {

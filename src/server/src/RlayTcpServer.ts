@@ -1,7 +1,7 @@
 import { Socket, Server } from "net"
 import { Logger } from "./Logger";
 import { ServerConfiguration } from "./ServerConfiguration";
-import { AsyncSocket, CommandMessage, TcpCommand } from "rlay-common"
+import { AsyncSocket, CommandMessage, TcpCommand } from "../../common/src"
 import { v4 as uuid } from "uuid"
 import { createAlias } from "./Alias";
 
