@@ -16,6 +16,7 @@ COPY --from=build /app/node_modules ./node_modules
 EXPOSE 8080
 EXPOSE 8081
 
+ENV RLAY_PASSWORD=
 ENV RLAY_PORT=8080
 ENV RLAY_TCP_PORT=8081
 ENTRYPOINT npm run start
